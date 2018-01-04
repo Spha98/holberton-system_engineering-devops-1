@@ -10,19 +10,20 @@ import requests
 if __name__ == '__main__':
     users = requests.get("https://jsonplaceholder.typicode.com/users",
                          verify=False).json()
-    jsonobj = {}
+    userdict = {}
+    usernamedict = {}
     for user in users:
-        userId = user.get("id")
-        todo = requests.get("https://jsonplaceholder.typicode.com/todos?{}={}".
-                            format("userId", userId), verify=False).json()
-        username = user.get('username')
-        tasks = []
-        for task in todo:
-            task_dict = {}
-            task_dict["task"] = task.get('title')
-            task_dict["completed"] = task.get('completed')
-            task_dict["username"] = username
-            tasks.append(task_dict)
-        jsonobj[userId] = tasks
+        uid = user.get("id")
+        userdict[uid] = []
+        usernamedict[uid] = user.get("username")
+    todo = requests.get("https://jsonplaceholder.typicode.com/todos",
+                        verify=False).json()
+    for task in todo:
+        taskdict = {}
+        uid = task.get("userId")
+        taskdict["task"] = task.get('title')
+        taskdict["completed"] = task.get('completed')
+        taskdict["username"] = usernamedict.get(uid)
+        userdict.get(uid).append(taskdict)
     with open("todo_all_employees.json", 'w') as jsonfile:
-        json.dump(jsonobj, jsonfile)
+        json.dump(userdict, jsonfile)
