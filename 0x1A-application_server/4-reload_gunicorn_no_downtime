@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# restart all gunicorn processes
+ps auxf | grep gunicorn | grep Ss | tr -s ' ' | cut -d' ' -f2 | while read -r line ; do
+   kill -HUP "$line"
+done
