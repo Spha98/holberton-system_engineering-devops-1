@@ -1,4 +1,5 @@
 # Postmortem
+![Everytime you make a typo a kitten dies.(meme)](http://s2.quickmeme.com/img/35/3502d765ce5788d4a0c6f88ff8ec0d9d65e0473c089e7e9cd429e0bf8e0d1ebf.jpg)
 ## Issue Summary:
 On 1/22/18 at 5:23 pm PST, 100% of the website's service was down for a total 12 minutes, with service reinstated at 5:35 pm PST. Users universally experienced a response with a status code of 500 (internal server error). The root cause of the outage was a single-letter, typographical error in which a `.php` file was typed as a `.phpp` file.
 
@@ -24,5 +25,6 @@ On 1/22/18 at 5:23 pm PST, 100% of the website's service was down for a total 12
 ## Root cause and resolution:
 The root cause of this outage was a typo made in the php file `/var/www/html/wp-settings.php` in which the file `/var/www/html/wp-includes/class-wp-locale.phpp` was required. The extension of `.phpp` was a typographical error, meant to be `.php`. Since `/var/www/html/wp-includes/class-wp-locale.phpp` did not exist and was required, a fatal error was raised, preventing content from being served. Since this code was deployed on all servers, this error caused a 100% outage. A puppet manifest to fix the typographical error was developed and deployed on all servers, reinstating service within 12 minutes of the outage.
 
+![I see you test your code in production. I too like to live dangerously.(meme)](http://virtser.net/images/test_automation.jpg)
 ## Corrective and preventative measures:
 To prevent wide-scale issues like this from occurring in the future, code should never be deployed on all servers before testing. Some things to consider for the future are: the development of company-wide testing protocol, setting up isolated docker containers for testing purposes, and the implementation of a two-person sign-off before major deployment.
