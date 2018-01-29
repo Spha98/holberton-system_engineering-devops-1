@@ -1,5 +1,3 @@
 #!/usr/bin/env bash
 # restart all gunicorn processes
-sudo ps auxf | tr -s ' ' | grep gunicorn | grep Ss | cut -d' ' -f2 | while read -r line ; do
-   sudo kill -HUP "$line"
-done
+pkill -HUP gunicorn
